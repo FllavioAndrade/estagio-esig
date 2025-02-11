@@ -2,7 +2,7 @@
 
 Este repositório contém os scripts e documentação necessários para a realização da atividade técnica proposta para a vaga de estágio em infraestrutura no ESIG Group. A atividade consiste em criar scripts para realizar o dump e restore de um banco de dados PostgreSQL, além de verificar o status das instâncias do JBoss e Tomcat.
 
-## Pré Rquisitos
+## Pré-Requisitos
 Vagrant v2.4.0 <p>
 Virtualbox v7.0.22 r165102 <p>
 Docker v27.5.1 <p>

@@ -8,7 +8,8 @@ Virtualbox v7.0.22 r165102 <p>
 Docker v27.5.1 <p>
 Docker compose v2.32.4 <p>
 Git <p>
-tree
+tree <p>
+unzip
 
 ## Requisitos da Atividade
 
@@ -32,7 +33,7 @@ Execute os seguinte comandos para instalação do virtual box, ou acesse a pági
 ```bash
 sudo apt update
 sudo apt upgrade -y
-sudo apt install git tree -y 
+sudo apt install git tree unzip -y 
 
 wget https://download.virtualbox.org/virtualbox/7.0.22/virtualbox-7.0_7.0.22-165102~Ubuntu~focal_amd64.deb
 
@@ -580,7 +581,7 @@ sudo apt-get update
 ```
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
-### Criando um docker compose para o tomcat
+### Criando um docker compose para o tomcat e subindo o serviço via container.
 - Agora vamos criar o docker compose para subir o container do tomcat.
 ```
 mkdir tomcat
@@ -596,7 +597,7 @@ services:
     volumes:
       - ./tomcat:/usr/local/tomcat/webapps/ROOT  # Mapeia o diretório tomcat para o diretório ROOT do Tomcat
     ports:
-      - "8080:8080"  # HTTP para aplicações (mapeia 8080 no host para 8080 no contêiner)
+      - "8081:8080"  # HTTP para aplicações (mapeia 8081 no host para 8080 no contêiner)
     networks:
       - app-network
 
@@ -604,3 +605,19 @@ networks:
   app-network:
     driver: bridge
 ```
+- Apenas para termos didáticos, vamos realizar o download de um HTML do site https://html5up.net/ e exportá-la para o diretório tomcat.
+```
+wget https://html5up.net/massively/download
+mv download tomcat/download.zip
+cd tomcat
+unzip download
+```
+- Agora vamos subir o container 
+```
+sudo docker compose up -d
+```
+- podemos ver o container do tomcat UP  com o comando <code>sudo docker container ls</code>e acessar a página web pela a seguinte URL http://IPdaVM:8081
+
+<img src="./img/container-tomcat.png" alt="crontab"><p>
+
+<img src="./img/site-tomcat.png" alt="crontab"><p>

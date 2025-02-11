@@ -180,8 +180,6 @@ vim dump-all.sh
 ```
 #!/bin/bash
 
-# Script 1: Backup do Banco de Dados Específico
-
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base para backups
 PGMAJOR=12

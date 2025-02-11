@@ -157,20 +157,10 @@ BACKUP_DIR_DIR="$BACKUP_DIR/dir"
 # Criar diretório de backup
 mkdir -p "$BACKUP_DIR_DIR"
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Backup em formato de diretório (parallel)
 echo "Criando backup do banco de dados '$DB_NAME' em formato de diretório..."
 pg_dump -j7 -Fd "$DB_NAME" -f "$BACKUP_DIR_DIR"
-check_error "Backup do banco de dados em formato de diretório"
 echo "Backup do banco '$DB_NAME' salvo em: $BACKUP_DIR_DIR"
-
 ```
 - Agora vamos criar o script que realize o dump de todos os bancos de dados do PostgreSQL.
 
@@ -185,13 +175,6 @@ BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base para backups
 PGMAJOR=12
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")  # Timestamp para evitar sobrescrita de backups
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 # Diretório de backup para a instância completa
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall/$TIMESTAMP"
 
@@ -201,7 +184,6 @@ mkdir -p "$BACKUP_DIR_ALL"
 # Backup de toda a instância PostgreSQL
 echo "Criando backup completo da instância PostgreSQL..."
 pg_dumpall > "$BACKUP_DIR_ALL/cluster.dump.sql"
-check_error "Backup completo da instância"
 echo "Backup completo da instância salvo em: $BACKUP_DIR_ALL/cluster.dump.sql"
 ```
 - Vamos dar permissão de execução para os scripts
@@ -250,14 +232,6 @@ PGMAJOR=12
 # Diretório de backups
 BACKUP_DIR="$BACKUP_BASE_DIR/$PGMAJOR/dump"
 
-# Função para verificar erros
-verificar_erro() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Listar backups disponíveis
 echo "Backups disponíveis:"
 BACKUP_FOLDERS=($(ls -d $BACKUP_DIR/*/ | xargs -n 1 basename))
@@ -281,13 +255,12 @@ BACKUP_DIR_DIR="$BACKUP_DIR/$BACKUP_FOLDER/dir"
 # Criar o banco de dados (se não existir)
 echo "Criando banco de dados '$DB_NOME'..."
 createdb -U postgres "$DB_NOME"
-verificar_erro "Criação do banco de dados"
+
 
 # Restaurar backup em formato de diretório
 echo "Restaurando backup em formato de diretório..."
 echo "Usando backup da pasta: $BACKUP_DIR_DIR"
 pg_restore -d "$DB_NOME" -j7 -Fd "$BACKUP_DIR_DIR"
-verificar_erro "Restauração em formato de diretório"
 
 echo "Restauração concluída com sucesso!"
 ```
@@ -301,14 +274,6 @@ vim restore-all.sh
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
 PGMAJOR=12
-
-# Função para verificar erros
-verificar_erro() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 
 # Diretório de backups completos
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall"
@@ -336,7 +301,6 @@ DUMPALL_FILE="$BACKUP_DIR_ALL/$DUMPALL_FOLDER/cluster.dump.sql"
 # Restaurar o dumpall
 echo "Restaurando backup completo da instância PostgreSQL..."
 psql -U postgres -f "$DUMPALL_FILE"
-verificar_erro "Restauração completa da instância"
 
 echo "Restauração completa da instância concluída com sucesso!"
 ```

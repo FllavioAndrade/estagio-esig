@@ -28,7 +28,7 @@ unzip
 ## Configuração do Ambiente
 
 #### instalação do Virtualbox
-Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [downlod](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
+Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [download](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
 
 ```bash
 sudo apt update
@@ -40,7 +40,7 @@ wget https://download.virtualbox.org/virtualbox/7.0.22/virtualbox-7.0_7.0.22-165
 sudo dpkg -i virtualbox-7.0_7.0.22-165102~Ubuntu~focal_amd64.deb
 ```
 #### Instalação do Vagrant
-Execute os seguinte comandos para instalação do vagrant ou acese a págine e realize o [download](https://developer.hashicorp.com/vagrant/install): <p>
+Execute os seguinte comandos para instalação do vagrant ou acesse a página e realize o [download](https://developer.hashicorp.com/vagrant/install): <p>
 ```
 $ wget https://releases.hashicorp.com/vagrant/2.4.0/vagrant_2.4.0_linux_amd64.zip
 $ unzip vagrant_2.4.0_linux_amd64.zip
@@ -50,7 +50,7 @@ $ sudo mv vagrant /usr/local/bin/
 ## Criação das máquinas virtuais
 
 ### Considerações:
-- A instalação do Jboss e do Banco de dados serão feita em **Baremetal** já o Tomcat será feito em um  **container** 
+- A instalação do Jboss e do Banco de dados serão feitas em **Baremetal**, já o Tomcat será feita em **container** 
 - As máquinas virtuais serão provisionadas via Vagrantfile <p>
 
 1 - Faça o clone do repositório
@@ -58,12 +58,12 @@ $ sudo mv vagrant /usr/local/bin/
 git clone https://github.com/fllavioandrade/estagio-esig 
 cd estagio-esig
 ```
-2 - Provisionar a máquina onde será instalado as  aplicações em baremetal
+2 - Provisionar a máquina onde serão instaladaa as aplicações.
  ```
 cd vagrant
 vagrant up
  ```
-2.1 Após provisionar a máquina você pode acessá-la com o comando <code>vagrant ssh </code>
+2.1 Após provisionar a máquina, você pode acessá-la com o comando <code>vagrant ssh </code>
 
 ### instalação e configuração do Postgresql
 - Instalação do postgres e acesso com usuário padrão.
@@ -77,12 +77,12 @@ sudo su postgres
 #Verificar a versão do postgres
 psql --version
 ```
-- Criação e aceso ao database
+- Criação e acesso ao database.
 ```
 createdb educacional
 \c educacional
 ```
-- Criação de duas tabelas e inserção de dados
+- Criação de duas tabelas e inserção de dados.
 ```
 -- Criação da tabela Aluno
 CREATE TABLE Aluno (
@@ -253,7 +253,7 @@ PGMAJOR=12
 BACKUP_DIR="$BACKUP_BASE_DIR/$PGMAJOR/dump"
 
 # Função para verificar erros
-check_error() {
+verificar_erro() {
   if [ $? -ne 0 ]; then
     echo "Erro: $1 falhou."
     exit 1
@@ -283,13 +283,13 @@ BACKUP_DIR_DIR="$BACKUP_DIR/$BACKUP_FOLDER/dir"
 # Criar o banco de dados (se não existir)
 echo "Criando banco de dados '$DB_NOME'..."
 createdb -U postgres "$DB_NOME"
-check_error "Criação do banco de dados"
+verificar_erro "Criação do banco de dados"
 
 # Restaurar backup em formato de diretório
 echo "Restaurando backup em formato de diretório..."
 echo "Usando backup da pasta: $BACKUP_DIR_DIR"
 pg_restore -d "$DB_NOME" -j7 -Fd "$BACKUP_DIR_DIR"
-check_error "Restauração em formato de diretório"
+verificar_erro "Restauração em formato de diretório"
 
 echo "Restauração concluída com sucesso!"
 ```
@@ -300,14 +300,12 @@ vim restore-all.sh
 ```
 #!/bin/bash
 
-
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
 PGMAJOR=12
 
-
 # Função para verificar erros
-check_error() {
+verificar_erro() {
   if [ $? -ne 0 ]; then
     echo "Erro: $1 falhou."
     exit 1
@@ -340,11 +338,11 @@ DUMPALL_FILE="$BACKUP_DIR_ALL/$DUMPALL_FOLDER/cluster.dump.sql"
 # Restaurar o dumpall
 echo "Restaurando backup completo da instância PostgreSQL..."
 psql -U postgres -f "$DUMPALL_FILE"
-check_error "Restauração completa da instância"
+verificar_erro "Restauração completa da instância"
 
 echo "Restauração completa da instância concluída com sucesso!"
 ```
-- agora que criamos os dois scripts, vamos dar permição de execução.
+- Agora que criamos os dois scripts, vamos dar permição de execução.
 ```
 sudo chmod +x restore-databse.sh
 sudo chmod +x restore-all.sh
@@ -368,7 +366,7 @@ EXIT
 dropdb educacional
 ```
 
-- Agora vamos restaurar usando o restore-all.sh
+- Vamos restaurar usando o restore-all.sh
 ```
 ./restore-all
 ```

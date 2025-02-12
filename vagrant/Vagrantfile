@@ -1,9 +1,24 @@
 Vagrant.configure("2") do |config|
-    config.vm.box = "ubuntu/focal64"
-    config.vm.hostname = "estagio-Esig"
-    config.vm.network "public_network"
-    config.vm.provider "virtualbox" do |v|
-      v.memory = 3072
-      v.cpus = 2
-    end
+  # Configuração da box (imagem base)
+  config.vm.box = "ubuntu/focal64"
+  config.vm.hostname = "estagio-Esig"
+
+  # Configuração de rede
+  config.vm.network "public_network"
+
+  # Configurações do VirtualBox
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 3072
+    v.cpus = 2
   end
+
+  # Sincronizar pastas locais com a VM
+  config.vm.synced_folder "scripts/jboss", "/home/vagrant/jboss"
+  config.vm.synced_folder "scripts/postgresql", "/home/vagrant/postgresql"
+  config.vm.synced_folder "scripts/tomcat", "/home/vagrant/tomcat"
+
+  # Executar scripts de dependências
+  config.vm.provision "shell", path: "scripts/dependencias/install-docker.sh"
+  config.vm.provision "shell", path: "scripts/dependencias/install-jboss.sh"
+  config.vm.provision "shell", path: "scripts/dependencias/install-postgreSQL.sh"
+end

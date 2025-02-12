@@ -621,3 +621,61 @@ sudo docker compose up -d
 <img src="./img/container-tomcat.png" alt="crontab"><p>
 
 <img src="./img/site-tomcat.png" alt="crontab"><p>
+
+### Criação do script para verificar o status do Tomcat
+
+- Crie um arquivo chamado <code>status-tomcat.sh</code> e adicione o seguinte script.
+
+```
+vim status-tomcat.sh
+```
+```
+#!/bin/bash
+
+# Nome do contêiner do Tomcat
+NOME_DO_CONTEINER="tomcat-server"
+
+# Verificar o status do contêiner e reiniciar se estiver parado por mais de 1 minuto
+STATUS=$(docker inspect -f '{{.State.Status}}' $NOME_DO_CONTEINER)
+
+#
+if [ "$STATUS" == "running" ]; then
+  TEMPO_ATIVO=$(docker inspect -f '{{.State.StartedAt}}' $NOME_DO_CONTEINER)
+  SEGUNDOS_ATIVO=$(( $(date +%s) - $(date -d "$TEMPO_ATIVO" +%s) ))
+  echo "A instância do Tomcat está em execução." 
+  echo "Tempo de atividade: $((SEGUNDOS_ATIVO / 60)) min $((SEGUNDOS_ATIVO % 60)) seg."
+else
+  HORA_PARADA=$(docker inspect -f '{{.State.FinishedAt}}' $NOME_DO_CONTEINER)
+  TEMPO_PARADO=$(( $(date +%s) - $(date -d "$HORA_PARADA" +%s) ))
+
+  if [ $TEMPO_PARADO -gt 60 ]; then
+    echo "A instância está INATIVA"
+    echo "Tempo de inatividade $((TEMPO_PARADO / 60)) min $((TEMPO_PARADO % 60)) seg"
+    docker start $NOME_DO_CONTEINER
+    sleep 5
+    echo "Instância reiniciada com sucesso."
+  else
+    echo "A instância do Tomcat está INATIVA."
+    echo "Tempo de inatividade: $((TEMPO_PARADO / 60)) min $((TEMPO_PARADO % 60)) seg"
+  fi
+fi
+
+```
+- Dê permissão de execução ao script.
+```
+sudo chmod +x status-tomcat.sh
+```
+- Agora vamos executar o script, em seguida vamos para o container, e após 1 minuto vamos executar o script novamente.
+```
+./status-tomcat.sh
+sudo docker container stop tomcat-server
+./status-tomcat.sh
+#espere um minuto e execute o script novamente.
+./status-tomcat.sh
+sudo docker container ls
+```
+<img src="./img/status-tomcat.png" alt="crontab"><p>
+- Podemos com que o script seja executado a cada 1 minuto.
+- Com o usuário padrão da máquina acesse o seguinte arquivo <code> sudo vim /etc/crontab</code> e adicione uma linha no final do arquivo com a seguinte informação:
+```
+* * * * * vagrant /home/vagrant/status-tomcat.sh

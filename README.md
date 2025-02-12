@@ -2,7 +2,7 @@
 
 Este repositório contém os scripts e documentação necessários para a realização da atividade técnica proposta para a vaga de estágio em infraestrutura no ESIG Group. A atividade consiste em criar scripts para realizar o dump e restore de um banco de dados PostgreSQL, além de verificar o status das instâncias do JBoss e Tomcat.
 
-## Pré Rquisitos
+## Pré-Requisitos
 Vagrant v2.4.0 <p>
 Virtualbox v7.0.22 r165102 <p>
 Docker v27.5.1 <p>
@@ -28,7 +28,7 @@ unzip
 ## Configuração do Ambiente
 
 #### instalação do Virtualbox
-Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [downlod](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
+Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [download](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
 
 ```bash
 sudo apt update
@@ -40,7 +40,7 @@ wget https://download.virtualbox.org/virtualbox/7.0.22/virtualbox-7.0_7.0.22-165
 sudo dpkg -i virtualbox-7.0_7.0.22-165102~Ubuntu~focal_amd64.deb
 ```
 #### Instalação do Vagrant
-Execute os seguinte comandos para instalação do vagrant ou acese a págine e realize o [download](https://developer.hashicorp.com/vagrant/install): <p>
+Execute os seguinte comandos para instalação do vagrant ou acesse a página e realize o [download](https://developer.hashicorp.com/vagrant/install): <p>
 ```
 $ wget https://releases.hashicorp.com/vagrant/2.4.0/vagrant_2.4.0_linux_amd64.zip
 $ unzip vagrant_2.4.0_linux_amd64.zip
@@ -50,7 +50,7 @@ $ sudo mv vagrant /usr/local/bin/
 ## Criação das máquinas virtuais
 
 ### Considerações:
-- A instalação do Jboss e do Banco de dados serão feita em **Baremetal** já o Tomcat será feito em um  **container** 
+- A instalação do Jboss e do Banco de dados serão feitas em **Baremetal**, já o Tomcat será feita em **container** 
 - As máquinas virtuais serão provisionadas via Vagrantfile <p>
 
 1 - Faça o clone do repositório
@@ -58,12 +58,12 @@ $ sudo mv vagrant /usr/local/bin/
 git clone https://github.com/fllavioandrade/estagio-esig 
 cd estagio-esig
 ```
-2 - Provisionar a máquina onde será instalado as  aplicações em baremetal
+2 - Provisionar a máquina onde serão instaladaa as aplicações.
  ```
 cd vagrant
 vagrant up
  ```
-2.1 Após provisionar a máquina você pode acessá-la com o comando <code>vagrant ssh </code>
+2.1 Após provisionar a máquina, você pode acessá-la com o comando <code>vagrant ssh </code>
 
 ### instalação e configuração do Postgresql
 - Instalação do postgres e acesso com usuário padrão.
@@ -77,12 +77,12 @@ sudo su postgres
 #Verificar a versão do postgres
 psql --version
 ```
-- Criação e aceso ao database
+- Criação e acesso ao database.
 ```
 createdb educacional
 \c educacional
 ```
-- Criação de duas tabelas e inserção de dados
+- Criação de duas tabelas e inserção de dados.
 ```
 -- Criação da tabela Aluno
 CREATE TABLE Aluno (
@@ -157,20 +157,10 @@ BACKUP_DIR_DIR="$BACKUP_DIR/dir"
 # Criar diretório de backup
 mkdir -p "$BACKUP_DIR_DIR"
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Backup em formato de diretório (parallel)
 echo "Criando backup do banco de dados '$DB_NAME' em formato de diretório..."
 pg_dump -j7 -Fd "$DB_NAME" -f "$BACKUP_DIR_DIR"
-check_error "Backup do banco de dados em formato de diretório"
 echo "Backup do banco '$DB_NAME' salvo em: $BACKUP_DIR_DIR"
-
 ```
 - Agora vamos criar o script que realize o dump de todos os bancos de dados do PostgreSQL.
 
@@ -180,20 +170,11 @@ vim dump-all.sh
 ```
 #!/bin/bash
 
-# Script 1: Backup do Banco de Dados Específico
-
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base para backups
 PGMAJOR=12
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")  # Timestamp para evitar sobrescrita de backups
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 # Diretório de backup para a instância completa
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall/$TIMESTAMP"
 
@@ -203,7 +184,6 @@ mkdir -p "$BACKUP_DIR_ALL"
 # Backup de toda a instância PostgreSQL
 echo "Criando backup completo da instância PostgreSQL..."
 pg_dumpall > "$BACKUP_DIR_ALL/cluster.dump.sql"
-check_error "Backup completo da instância"
 echo "Backup completo da instância salvo em: $BACKUP_DIR_ALL/cluster.dump.sql"
 ```
 - Vamos dar permissão de execução para os scripts
@@ -252,14 +232,6 @@ PGMAJOR=12
 # Diretório de backups
 BACKUP_DIR="$BACKUP_BASE_DIR/$PGMAJOR/dump"
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Listar backups disponíveis
 echo "Backups disponíveis:"
 BACKUP_FOLDERS=($(ls -d $BACKUP_DIR/*/ | xargs -n 1 basename))
@@ -283,13 +255,12 @@ BACKUP_DIR_DIR="$BACKUP_DIR/$BACKUP_FOLDER/dir"
 # Criar o banco de dados (se não existir)
 echo "Criando banco de dados '$DB_NOME'..."
 createdb -U postgres "$DB_NOME"
-check_error "Criação do banco de dados"
+
 
 # Restaurar backup em formato de diretório
 echo "Restaurando backup em formato de diretório..."
 echo "Usando backup da pasta: $BACKUP_DIR_DIR"
 pg_restore -d "$DB_NOME" -j7 -Fd "$BACKUP_DIR_DIR"
-check_error "Restauração em formato de diretório"
 
 echo "Restauração concluída com sucesso!"
 ```
@@ -300,19 +271,9 @@ vim restore-all.sh
 ```
 #!/bin/bash
 
-
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
 PGMAJOR=12
-
-
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 
 # Diretório de backups completos
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall"
@@ -340,11 +301,10 @@ DUMPALL_FILE="$BACKUP_DIR_ALL/$DUMPALL_FOLDER/cluster.dump.sql"
 # Restaurar o dumpall
 echo "Restaurando backup completo da instância PostgreSQL..."
 psql -U postgres -f "$DUMPALL_FILE"
-check_error "Restauração completa da instância"
 
 echo "Restauração completa da instância concluída com sucesso!"
 ```
-- agora que criamos os dois scripts, vamos dar permição de execução.
+- Agora que criamos os dois scripts, vamos dar permição de execução.
 ```
 sudo chmod +x restore-databse.sh
 sudo chmod +x restore-all.sh
@@ -368,7 +328,7 @@ EXIT
 dropdb educacional
 ```
 
-- Agora vamos restaurar usando o restore-all.sh
+- Vamos restaurar usando o restore-all.sh
 ```
 ./restore-all
 ```

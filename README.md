@@ -2,6 +2,9 @@
 
 Este repositório contém os scripts e documentação necessários para a realização da atividade técnica proposta para a vaga de estágio em infraestrutura no ESIG Group. A atividade consiste em criar scripts para realizar o dump e restore de um banco de dados PostgreSQL, além de verificar o status das instâncias do JBoss e Tomcat.
 
+### OBSERVAÇÃO
+- Este respositório instala todas as aplicações e dependências necessárias para que os scripts possam ser executados seguindo este README. Caso você queira verificar o passo a passo da instalação das dependencias e das aplicações, [clique aqui](https://github.com/FllavioAndrade/estagio-esig/tree/master).
+
 ## Pré Rquisitos
 Vagrant v2.4.0 <p>
 Virtualbox v7.0.22 r165102 <p>
@@ -244,3 +247,12 @@ sudo docker container stop tomcat-server
 sudo docker container ls -a
 ```
 <img src="./img/start-tomcat.png" alt="crontab"><p>
+
+## Gerenciado os logs da automação.
+Podemos gerenciar os logs da automação do Tomcat e do Jboss para posteriormente serem visualizadas por alguma aplicação, como, por exemplo, o Grafana Loki.
+
+- Inicialmente vamos criar os diretórios para armazenar as saídas dos scripts.
+
+```
+mkdir -p /home/vagrant/
+```

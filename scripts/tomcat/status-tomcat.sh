@@ -10,7 +10,6 @@ timestamp() {
     date +"%Y-%m-%d %H:%M:%S" 
 }
 
-#
 if [ "$STATUS" == "running" ]; then
   TEMPO_ATIVO=$(docker inspect -f '{{.State.StartedAt}}' $NOME_DO_CONTEINER)
   SEGUNDOS_ATIVO=$(( $(date +%s) - $(date -d "$TEMPO_ATIVO" +%s) ))
@@ -20,6 +19,5 @@ if [ "$STATUS" == "running" ]; then
   echo "$(timestamp) | A instância do Tomcat está em execução." 
   echo "$(timestamp) | Tempo de atividade: $((HORA)) h   $((MIN)) min $((SEG)) seg."
 else
-    echo "$(timestamp) | INSTANCIA INATIVA!!"
-    ./start-tomcat.sh >> /home/vagrant/tomcat/log/inativo/log.txt
+    ./start-tomcat.sh
 fi

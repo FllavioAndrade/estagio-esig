@@ -2,7 +2,7 @@
 
 # Instalação do PostgreSQL
 sudo apt update
-sudo apt install postgresql -y
+sudo apt install -y tree postgresql
 
 #Criar repositório para armazenar os dumps
 sudo mkdir -p /var/backups/pgsql/12/dump/

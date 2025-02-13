@@ -5,7 +5,7 @@ services:
     image: tomcat:latest
     container_name: tomcat-server
     volumes:
-      - ./tomcat:/usr/local/tomcat/webapps/ROOT  # Mapeia o diretório tomcat para o diretório ROOT do Tomcat
+      - ./webserver:/usr/local/tomcat/webapps/ROOT  # Mapeia o diretório tomcat para o diretório ROOT do Tomcat
     ports:
       - "8081:8080"  # HTTP para aplicações (mapeia 8081 no host para 8080 no contêiner)
     networks:

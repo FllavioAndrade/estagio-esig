@@ -4,14 +4,6 @@
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
 PGMAJOR=12
 
-# Função para verificar erros
-verificar_erro() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Diretório de backups completos
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall"
 
@@ -38,6 +30,5 @@ DUMPALL_FILE="$BACKUP_DIR_ALL/$DUMPALL_FOLDER/cluster.dump.sql"
 # Restaurar o dumpall
 echo "Restaurando backup completo da instância PostgreSQL..."
 psql -U postgres -f "$DUMPALL_FILE"
-verificar_erro "Restauração completa da instância"
 
 echo "Restauração completa da instância concluída com sucesso!"

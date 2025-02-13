@@ -9,7 +9,6 @@ timestamp() {
     date +"%Y-%m-%d %H:%M:%S" 
 }
 
-
 HORA_PARADA=$(docker inspect -f '{{.State.FinishedAt}}' $NOME_DO_CONTEINER)
 TEMPO_PARADO=$(( $(date +%s) - $(date -d "$HORA_PARADA" +%s) ))
 HORA=$((TEMPO_PARADO / 3600))
@@ -17,7 +16,7 @@ MIN=$(((TEMPO_PARADO % 3600)/60))
 SEG=$((TEMPO_PARADO % 60))
 
 echo "$(timestamp) | A instância está INATIVA"
-echo "$(timestamp) | Tempo de atividade: $((HORA)) h   $((MIN)) min $((SEG)) seg."
+echo "$(timestamp) | Tempo de inatividade: $((HORA)) h   $((MIN)) min $((SEG)) seg."
 if [ $TEMPO_PARADO -gt 60 ]; then
   docker start $NOME_DO_CONTEINER
   sleep 5

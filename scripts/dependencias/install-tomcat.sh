@@ -12,7 +12,7 @@ cd webserver
 wget https://html5up.net/massively/download
 mv download download.zip
 unzip download.zip
-cd ..
+cd .. 
 
 # subir o docker-compose
 sudo docker compose --compatibility up -d

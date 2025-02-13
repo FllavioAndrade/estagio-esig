@@ -1,0 +1,51 @@
+2025-02-13 04:15:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:15:01 | Tempo de atividade: 0 h   26 min 32 seg.
+2025-02-13 04:16:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:16:01 | Tempo de atividade: 0 h   27 min 32 seg.
+2025-02-13 04:17:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:17:01 | Tempo de atividade: 0 h   28 min 32 seg.
+2025-02-13 04:18:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:18:01 | Tempo de atividade: 0 h   29 min 32 seg.
+2025-02-13 04:19:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:19:01 | Tempo de atividade: 0 h   30 min 32 seg.
+2025-02-13 04:20:01 | A instância do Tomcat está em execução. 32
+2025-02-13 04:20:01 | Tempo de atividade: 0 h   31 min 32 seg.
+2025-02-13 04:24:01 | INSTANCIA INATIVA!!
+2025-02-13 04:25:01 | INSTANCIA INATIVA!!
+2025-02-13 04:26:02 | INSTANCIA INATIVA!!
+2025-02-13 04:27:01 | INSTANCIA INATIVA!!
+2025-02-13 04:28:01 | INSTANCIA INATIVA!!
+2025-02-13 04:29:01 | A instância do Tomcat está em execução. 49
+2025-02-13 04:29:01 | Tempo de atividade: 0 h   0 min 49 seg.
+2025-02-13 04:30:01 | A instância do Tomcat está em execução. 49
+2025-02-13 04:30:01 | Tempo de atividade: 0 h   1 min 49 seg.
+2025-02-13 04:31:01 | A instância do Tomcat está em execução. 49
+2025-02-13 04:31:01 | Tempo de atividade: 0 h   2 min 49 seg.
+2025-02-13 04:32:01 | A instância do Tomcat está em execução. 49
+2025-02-13 04:32:01 | Tempo de atividade: 0 h   3 min 49 seg.
+2025-02-13 04:33:01 | A instância do Tomcat está em execução. 49
+2025-02-13 04:33:01 | Tempo de atividade: 0 h   4 min 49 seg.
+2025-02-13 04:34:01 | A instância do Tomcat está em execução.
+2025-02-13 04:34:01 | Tempo de atividade: 0 h   5 min 49 seg.
+2025-02-13 04:35:01 | A instância do Tomcat está em execução.
+2025-02-13 04:35:01 | Tempo de atividade: 0 h   6 min 49 seg.
+2025-02-13 04:36:01 | INSTANCIA INATIVA!!
+2025-02-13 04:37:01 | INSTANCIA INATIVA!!
+2025-02-13 04:38:01 | INSTANCIA INATIVA!!
+2025-02-13 04:39:01 | INSTANCIA INATIVA!!
+2025-02-13 04:40:01 | INSTANCIA INATIVA!!
+2025-02-13 04:41:01 | INSTANCIA INATIVA!!
+2025-02-13 04:42:01 | INSTANCIA INATIVA!!
+2025-02-13 04:43:01 | INSTANCIA INATIVA!!
+2025-02-13 04:44:01 | INSTANCIA INATIVA!!
+2025-02-13 04:45:01 | INSTANCIA INATIVA!!
+2025-02-13 04:46:01 | INSTANCIA INATIVA!!
+2025-02-13 04:47:01 | INSTANCIA INATIVA!!
+2025-02-13 04:48:02 | INSTANCIA INATIVA!!
+2025-02-13 04:49:01 | INSTANCIA INATIVA!!
+2025-02-13 04:50:01 | INSTANCIA INATIVA!!
+2025-02-13 04:51:01 | INSTANCIA INATIVA!!
+2025-02-13 04:52:01 | INSTANCIA INATIVA!!
+2025-02-13 04:53:01 | INSTANCIA INATIVA!!
+2025-02-13 04:54:01 | INSTANCIA INATIVA!!
+2025-02-13 04:55:01 | INSTANCIA INATIVA!!

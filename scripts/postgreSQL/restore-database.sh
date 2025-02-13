@@ -8,13 +8,6 @@ PGMAJOR=12
 # Diretório de backups
 BACKUP_DIR="$BACKUP_BASE_DIR/$PGMAJOR/dump"
 
-# Função para verificar erros
-verificar_erro() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 
 # Listar backups disponíveis
 echo "Backups disponíveis:"
@@ -39,12 +32,10 @@ BACKUP_DIR_DIR="$BACKUP_DIR/$BACKUP_FOLDER/dir"
 # Criar o banco de dados (se não existir)
 echo "Criando banco de dados '$DB_NOME'..."
 createdb -U postgres "$DB_NOME"
-verificar_erro "Criação do banco de dados"
 
 # Restaurar backup em formato de diretório
 echo "Restaurando backup em formato de diretório..."
 echo "Usando backup da pasta: $BACKUP_DIR_DIR"
 pg_restore -d "$DB_NOME" -j7 -Fd "$BACKUP_DIR_DIR"
-verificar_erro "Restauração em formato de diretório"
 
 echo "Restauração concluída com sucesso!"

@@ -5,11 +5,7 @@ Este repositório contém os scripts e documentação necessários para a realiz
 ## Pré Rquisitos
 Vagrant v2.4.0 <p>
 Virtualbox v7.0.22 r165102 <p>
-Docker v27.5.1 <p>
-Docker compose v2.32.4 <p>
-Git <p>
-tree <p>
-unzip
+
 
 ## Requisitos da Atividade
 
@@ -27,8 +23,8 @@ unzip
 
 ## Configuração do Ambiente
 
-#### instalação do Virtualbox
-Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [downlod](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
+#### Instalação do Virtualbox
+Execute os seguinte comandos para instalação do virtual box, ou acesse a página e realize o [download](https://www.virtualbox.org/wiki/Download_Old_Builds_7_0): <p>
 
 ```bash
 sudo apt update
@@ -50,13 +46,14 @@ $ sudo mv vagrant /usr/local/bin/
 ## Criação das máquinas virtuais
 
 ### Considerações:
-- A instalação do Jboss e do Banco de dados serão feita em **Baremetal** já o Tomcat será feito em um  **container** 
+- A instalação do Jboss e do Banco de dados serão feita em **Baremetal**, já o Tomcat será feito em um  **container** 
 - As máquinas virtuais serão provisionadas via Vagrantfile <p>
 
 1 - Faça o clone do repositório
 ```
 git clone https://github.com/fllavioandrade/estagio-esig 
 cd estagio-esig
+git checkout developer
 ```
 2 - Provisionar a máquina onde será instalado as  aplicações em baremetal
  ```
@@ -65,82 +62,25 @@ vagrant up
  ```
 2.1 Após provisionar a máquina você pode acessá-la com o comando <code>vagrant ssh </code>
 
-### instalação e configuração do Postgresql
-- Instalação do postgres e acesso com usuário padrão.
-```
-#instalação do Postgresql
-sudo apt install postgresql -y 
+## Criação do dump do banco de dados
 
-#Acessar com o usuário postgres
+- Acesse o diretório <code> /home/vagrant/postgresql/ </code> mude para o usuário <code>postgres</code> e execute o script <code>dump-database.sh</code> e <code>dump-all.sh</code>, conforme o mostrado abaixo:
+
+```
+cd /home/vagrant/postgresql/
 sudo su postgres
-
-#Verificar a versão do postgres
-psql --version
+./dump-database.sh
+./dump-all.sh
 ```
-- Criação e aceso ao database
-```
-createdb educacional
-\c educacional
-```
-- Criação de duas tabelas e inserção de dados
-```
--- Criação da tabela Aluno
-CREATE TABLE Aluno (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100),
-    Matricula VARCHAR(20) UNIQUE
-);
+<img src="./img/dump.png" alt="dump">
 
--- Criação da tabela Curso
-CREATE TABLE Curso (
-    ID SERIAL PRIMARY KEY,
-    Nome VARCHAR(100)
-);
+- Podemos ver os arquivos criador usando o comando <code> tree </code>
 
--- Inserção de dados na tabela Aluno
-INSERT INTO Aluno (Nome, Matricula) VALUES ('João Silva', '2023001');
-INSERT INTO Aluno (Nome, Matricula) VALUES ('Maria Oliveira', '2023002');
-INSERT INTO Aluno (Nome, Matricula) VALUES ('Carlos Souza', '2023003');
-INSERT INTO Aluno (Nome, Matricula) VALUES ('Ana Costa', '2023004');
-INSERT INTO Aluno (Nome, Matricula) VALUES ('Paulo Mendes', '2023005');
+<img src="./img/dump-view.png" alt="dump"><p>
 
--- Inserção de dados na tabela Curso
-INSERT INTO Curso (Nome) VALUES ('Engenharia de Software');
-INSERT INTO Curso (Nome) VALUES ('Administração');
-INSERT INTO Curso (Nome) VALUES ('Direito');
-INSERT INTO Curso (Nome) VALUES ('Medicina');
-INSERT INTO Curso (Nome) VALUES ('Arquitetura');
+### Scripts utilizados
+#### dump-databse.sh
 
-```
-- Verificar se as tabelas foram criadas
-```
-\dt
-```
-
-<img src="./img/table.png" alt="tabela"><p>
-Criação do diretório para armazenar os dumps:
-```
-# sair do psql
-exit
-
-# voltar para o usuário padrão da máquina
-CTRL + D
-
-#Criar os diretórios para armazenar o backup.
-sudo mkdir -p /var/backups/pgsql/12/dump/
-sudo mkdir -p /var/backups/pgsql/12/dumpall/
-
-#mudar o proprietário e o grupo dos diretórios para  postgres
-sudo chown -R postgres:postgres /var/backups/pgsql
-```
-## Script para automação do dump.
-
-- Crie um arquivo por nome dump-database.sh e adicione o script nele. Esse arquivo será responsável por fazer o dump de um determinado database (no nosso caso, a tabela educacional). 
-
-```
-cd ~
-vim dump-database.sh
-```
 ```
 #!/bin/bash
 
@@ -157,43 +97,20 @@ BACKUP_DIR_DIR="$BACKUP_DIR/dir"
 # Criar diretório de backup
 mkdir -p "$BACKUP_DIR_DIR"
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
 # Backup em formato de diretório (parallel)
 echo "Criando backup do banco de dados '$DB_NAME' em formato de diretório..."
 pg_dump -j7 -Fd "$DB_NAME" -f "$BACKUP_DIR_DIR"
-check_error "Backup do banco de dados em formato de diretório"
 echo "Backup do banco '$DB_NAME' salvo em: $BACKUP_DIR_DIR"
-
 ```
-- Agora vamos criar o script que realize o dump de todos os bancos de dados do PostgreSQL.
-
-```
-vim dump-all.sh
-```
+#### dump-all.sh
 ```
 #!/bin/bash
-
-# Script 1: Backup do Banco de Dados Específico
 
 # Configurações
 BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base para backups
 PGMAJOR=12
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")  # Timestamp para evitar sobrescrita de backups
 
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
 # Diretório de backup para a instância completa
 BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall/$TIMESTAMP"
 
@@ -203,25 +120,13 @@ mkdir -p "$BACKUP_DIR_ALL"
 # Backup de toda a instância PostgreSQL
 echo "Criando backup completo da instância PostgreSQL..."
 pg_dumpall > "$BACKUP_DIR_ALL/cluster.dump.sql"
-check_error "Backup completo da instância"
 echo "Backup completo da instância salvo em: $BACKUP_DIR_ALL/cluster.dump.sql"
-```
-- Vamos dar permissão de execução para os scripts
-```
-sudo chmod +x dump-all.sh
-sudo chmod +x dump-database.sh
-```
-- Agora vamos executar o script para realizar o dump
-```
-sudo su postgres
-./dump-database.sh
-./dump-all.sh
-```
-<img src="./img/dump.png" alt="dump">
 
-- Podemos ver os arquivos criador usando o comando <code> tree </code>
+```
 
-<img src="./img/dump-view.png" alt="dump"><p>
+
+## Realizando o restore do banco de dados
+
 
 - Com isso, já podemos excluir nosso database
 
@@ -231,123 +136,6 @@ psql -d educacional
 
 # A saída deve ser:
 # psql: error: FATAL:  database "educacional" does not exist
-```
-## Script para automação do restore
-- Vamos voltar para o usuário padrão da máquina e criar os scripts de restore, tanto para o database quanto para todo PostgreSQL.
-
-```
-CTRL + D
-cd ~
-vim restore-database.sh
-```
-
-```
-#!/bin/bash
-
-# Configurações
-DB_NOME="educacional"  # Nome do banco de dados a ser restaurado
-BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
-PGMAJOR=12
-
-# Diretório de backups
-BACKUP_DIR="$BACKUP_BASE_DIR/$PGMAJOR/dump"
-
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
-# Listar backups disponíveis
-echo "Backups disponíveis:"
-BACKUP_FOLDERS=($(ls -d $BACKUP_DIR/*/ | xargs -n 1 basename))
-for i in "${!BACKUP_FOLDERS[@]}"; do
-  echo "$((i+1)). ${BACKUP_FOLDERS[$i]}"
-done
-
-# Solicitar escolha do usuário
-read -p "Escolha o número do backup que deseja restaurar: " BACKUP_CHOICE
-
-# Validar escolha do usuário
-if [[ ! $BACKUP_CHOICE =~ ^[0-9]+$ ]] || [ $BACKUP_CHOICE -lt 1 ] || [ $BACKUP_CHOICE -gt ${#BACKUP_FOLDERS[@]} ]; then
-  echo "Escolha inválida. Saindo."
-  exit 1
-fi
-
-# Definir a pasta de backup escolhida
-BACKUP_FOLDER="${BACKUP_FOLDERS[$((BACKUP_CHOICE-1))]}"
-BACKUP_DIR_DIR="$BACKUP_DIR/$BACKUP_FOLDER/dir"
-
-# Criar o banco de dados (se não existir)
-echo "Criando banco de dados '$DB_NOME'..."
-createdb -U postgres "$DB_NOME"
-check_error "Criação do banco de dados"
-
-# Restaurar backup em formato de diretório
-echo "Restaurando backup em formato de diretório..."
-echo "Usando backup da pasta: $BACKUP_DIR_DIR"
-pg_restore -d "$DB_NOME" -j7 -Fd "$BACKUP_DIR_DIR"
-check_error "Restauração em formato de diretório"
-
-echo "Restauração concluída com sucesso!"
-```
-
-```
-vim restore-all.sh 
-```
-```
-#!/bin/bash
-
-
-# Configurações
-BACKUP_BASE_DIR="/var/backups/pgsql"  # Diretório base dos backups
-PGMAJOR=12
-
-
-# Função para verificar erros
-check_error() {
-  if [ $? -ne 0 ]; then
-    echo "Erro: $1 falhou."
-    exit 1
-  fi
-}
-
-# Diretório de backups completos
-BACKUP_DIR_ALL="$BACKUP_BASE_DIR/$PGMAJOR/dumpall"
-
-# Listar backups completos disponíveis
-echo "Backups completos da instância disponíveis:"
-DUMPALL_FILES=($(ls $BACKUP_DIR_ALL/*/cluster.dump.sql | xargs -n 1 dirname | xargs -n 1 basename))
-for i in "${!DUMPALL_FILES[@]}"; do
-  echo "$((i+1)). ${DUMPALL_FILES[$i]}"
-done
-
-# Solicitar escolha do usuário
-read -p "Escolha o número do backup completo que deseja restaurar: " DUMPALL_CHOICE
-
-# Validar escolha do usuário
-if [[ ! $DUMPALL_CHOICE =~ ^[0-9]+$ ]] || [ $DUMPALL_CHOICE -lt 1 ] || [ $DUMPALL_CHOICE -gt ${#DUMPALL_FILES[@]} ]; then
-  echo "Escolha inválida. Saindo."
-  exit 1
-fi
-
-# Definir o arquivo de dumpall escolhido
-DUMPALL_FOLDER="${DUMPALL_FILES[$((DUMPALL_CHOICE-1))]}"
-DUMPALL_FILE="$BACKUP_DIR_ALL/$DUMPALL_FOLDER/cluster.dump.sql"
-
-# Restaurar o dumpall
-echo "Restaurando backup completo da instância PostgreSQL..."
-psql -U postgres -f "$DUMPALL_FILE"
-check_error "Restauração completa da instância"
-
-echo "Restauração completa da instância concluída com sucesso!"
-```
-- agora que criamos os dois scripts, vamos dar permição de execução.
-```
-sudo chmod +x restore-databse.sh
-sudo chmod +x restore-all.sh
 ```
 #### Executando o script de restore.
 - Agora vamos restaurar a tabela usando o restore-databse.sh.

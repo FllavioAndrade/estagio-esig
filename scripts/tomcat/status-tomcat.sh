@@ -10,20 +10,11 @@ STATUS=$(docker inspect -f '{{.State.Status}}' $NOME_DO_CONTEINER)
 if [ "$STATUS" == "running" ]; then
   TEMPO_ATIVO=$(docker inspect -f '{{.State.StartedAt}}' $NOME_DO_CONTEINER)
   SEGUNDOS_ATIVO=$(( $(date +%s) - $(date -d "$TEMPO_ATIVO" +%s) ))
-  echo "A instância do Tomcat está em execução." 
-  echo "Tempo de atividade: $((SEGUNDOS_ATIVO / 60)) min $((SEGUNDOS_ATIVO % 60)) seg."
+  HORA=$((SEGUNDOS_ATIVO / 3600))
+  MIN=$(((SEGUNDOS_ATIVO % 3600)/60)) 
+  SEG=$((SEGUNDOS_ATIVO % 60))
+  echo "A instância do Tomcat está em execução. $SEG" 
+  echo "Tempo de atividade: $((HORA)) h   $((MIN)) min $((SEG)) seg."
 else
-  HORA_PARADA=$(docker inspect -f '{{.State.FinishedAt}}' $NOME_DO_CONTEINER)
-  TEMPO_PARADO=$(( $(date +%s) - $(date -d "$HORA_PARADA" +%s) ))
-
-  if [ $TEMPO_PARADO -gt 60 ]; then
-    echo "A instância está INATIVA"
-    echo "Tempo de inatividade $((TEMPO_PARADO / 60)) min $((TEMPO_PARADO % 60)) seg"
-    docker start $NOME_DO_CONTEINER
-    sleep 5
-    echo "Instância reiniciada com sucesso."
-  else
-    echo "A instância do Tomcat está INATIVA."
-    echo "Tempo de inatividade: $((TEMPO_PARADO / 60)) min $((TEMPO_PARADO % 60)) seg"
-  fi
+    ./start-tomcat.sh
 fi

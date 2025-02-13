@@ -13,12 +13,21 @@ Vagrant.configure("2") do |config|
   end
 
   # Sincronizar pastas locais com a VM
-  config.vm.synced_folder "scripts/jboss", "/home/vagrant/jboss"
-  config.vm.synced_folder "scripts/postgresql", "/home/vagrant/postgresql"
-  config.vm.synced_folder "scripts/tomcat", "/home/vagrant/tomcat"
+  config.vm.synced_folder "../scripts/jboss", "/home/vagrant/jboss"
+  config.vm.synced_folder "../scripts/postgreSQL", "/home/vagrant/postgresql"
+  config.vm.synced_folder "../scripts/tomcat", "/home/vagrant/tomcat"
+
+  # Adicionar permissões de execução aos scripts .sh
+  config.vm.provision "shell", inline: <<-SHELL
+    chmod +x /home/vagrant/jboss/*.sh
+    chmod +x /home/vagrant/postgresql/*.sh
+    chmod +x /home/vagrant/tomcat/status-tomcat.sh
+  SHELL
 
   # Executar scripts de dependências
-  config.vm.provision "shell", path: "scripts/dependencias/install-docker.sh"
-  config.vm.provision "shell", path: "scripts/dependencias/install-jboss.sh"
-  config.vm.provision "shell", path: "scripts/dependencias/install-postgreSQL.sh"
+  config.vm.provision "shell", path: "../scripts/dependencias/install-docker.sh"
+  config.vm.provision "shell", path: "../scripts/dependencias/install-jboss.sh"
+  config.vm.provision "shell", path: "../scripts/dependencias/install-postgreSQL.sh"
+  config.vm.provision "shell", path: "../scripts/dependencias/install-tomcat.sh", privileged: true
 end
+

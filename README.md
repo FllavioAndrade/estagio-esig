@@ -290,3 +290,5 @@ touch /home/vagrant/tomcat/log/inativo/log.txt
 
 <img src="./img/log-ativo-jboss.png" alt="crontab"><p>
 <img src="./img/log-ativo-tomcat.png" alt="crontab"><p>
+
+## Monitorando os Logs com o Grafana

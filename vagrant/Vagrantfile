@@ -16,13 +16,14 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "../scripts/jboss", "/home/vagrant/jboss"
   config.vm.synced_folder "../scripts/postgreSQL", "/home/vagrant/postgresql"
   config.vm.synced_folder "../scripts/tomcat", "/home/vagrant/tomcat"
+  config.vm.synced_folder "../scripts/monitoramento", "/home/vagrant/monitoramento"
+
 
   # Adicionar permissões de execução aos scripts .sh
   config.vm.provision "shell", inline: <<-SHELL
     chmod +x /home/vagrant/jboss/*.sh
     chmod +x /home/vagrant/postgresql/*.sh
     chmod +x /home/vagrant/tomcat/status-tomcat.sh
-    chmod +x /home/vagrant/tomcat/start-tomcat.sh
   SHELL
 
   # Executar scripts de dependências

@@ -19,5 +19,5 @@ if [ "$STATUS" == "running" ]; then
   echo "$(timestamp) | A instância do Tomcat está em execução." 
   echo "$(timestamp) | Tempo de atividade: $((HORA)) h   $((MIN)) min $((SEG)) seg."
 else
-    ./start-tomcat.sh
+    ./start-tomcat.sh >> /home/vagrant/tomcat/log/inativo/log.txt
 fi

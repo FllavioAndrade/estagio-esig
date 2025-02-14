@@ -22,12 +22,11 @@ if [ "$STATUS" = "active" ]; then
     MIN=$(((SEGUNDOS_ATIVO % 3600) / 60))  
     SEG=$((SEGUNDOS_ATIVO % 60))
 
-    echo "O serviço $NOME_SERVICO está EM EXECUÇÃO."
+    echo "$(timestamp) | O serviço $NOME_SERVICO está EM EXECUÇÃO."
     echo "$(timestamp) | Tempo de atividade: $((DIA)) d  $((HORA)) h  $((MIN)) min $((SEG)) seg."
 
 
 # Se o serviço estiver parado
 elif [ "$STATUS" = "inactive" ]; then
-    ./start-jboss.sh
-
+    ./start-jboss.sh >> /home/vagrant/tomcat/log/inativo/log.txt
 fi

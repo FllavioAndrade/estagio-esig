@@ -254,5 +254,39 @@ Podemos gerenciar os logs da automação do Tomcat e do Jboss para posteriorment
 - Inicialmente vamos criar os diretórios para armazenar as saídas dos scripts.
 
 ```
-mkdir -p /home/vagrant/
+mkdir -p /home/vagrant/jboss/log/ativo
+mkdir -p /home/vagrant/jboss/log/inativo
+touch /home/vagrant/jboss/log/ativo/log.txt
+touch /home/vagrant/jboss/log/inativo/log.txt
+
+mkdir -p /home/vagrant/tomcat/log/ativo
+mkdir -p /home/vagrant/tomcat/log/inativo
+touch /home/vagrant/tomcat/log/ativo/log.txt
+touch /home/vagrant/tomcat/log/inativo/log.txt
 ```
+- Edite a linha 22 do arquivo <code>status-tomcat.sh</code> em <code>/home/vagrant/tomcat</code> para redirecionar a saída do <code>start-tomcat.sh</code> para o arquivo <code>/home/vagrant/tomcat/log/inativo/log.txt</code>
+```
+22|     ./start-tomcat.sh >> /home/vagrant/tomcat/log/inativo/log.txt
+```
+- Edite a linha 31 do arquivo <code>status-jboss.sh</code> em <code>/home/vagrant/jboss</code> para redirecionar a saída do <code>start-jboss.sh</code> para o arquivo <code>/home/vagrant/jboss/log/inativo/log.txt</code>
+
+```
+31|    ./start-jboss.sh >> /home/vagrant/tomcat/log/inativo/log.txt
+```
+- Edite a linha do <code>crontab</code> que executa <code>status-tomcat.sh</code> em <code>/etc/crontab</code> para redirecionar a saída do <code>status-tomcat.sh</code> para o arquivo <code>/home/vagrant/jboss/log/ativo/log.txt</code>
+```
+* * * * * vagrant /home/vagrant/tomcat/status-tomcat.sh >> /home/vagrant/tomcat/log/ativo/log.txt
+```
+- E a linha que executa o <code>status-tomcat.sh</code> para redirecionar a saída para <code>/home/vagrant/jboss/log/ativo/log.txt</code>
+
+```
+* * * * * vagrant /home/vagrant/jboss/status-jboss.sh >> /home/vagrant/jboss/log/ativo/log.txt
+```
+- Ficando conforme a imagem abaixo
+<img src="./img/log-crontab.png" alt="crontab"><p>
+
+- A cada minuto, a saída dos scripts <code>status-tomcat.sh</code> e <code>status-jboss.sh</code> são armazenadas em <code>/home/vagrant/tomcat/log/log/ativo/log.txt</code> e em <code>/home/vagrant/jboss/log/log/ativo/log.txt</code> respectivamente.
+- O mesmo acontece quando as aplicações ficarem indisponíveis, neste caso a arquivo de log serpa <code>/home/vagrant/jboss/log/log/inativo/log.txt</code> e <code>/home/vagrant/tomcat/log/log/inativo/log.txt</code>.
+
+<img src="./img/log-ativo-jboss.png" alt="crontab"><p>
+<img src="./img/log-ativo-tomcat.png" alt="crontab"><p>

@@ -1,2 +1,3 @@
 vagrant/.vagrant/
 scripts/tomcat/log/
+scripts/jboss/log/
